@@ -21,7 +21,7 @@ Before you begin, ensure you have the following installed:
 1. Clone the repository:
 ```bash
 git clone https://github.com/MohamedBattawy/My-Reading-List.git
-cd book-management-system
+cd My-Reading-List
 ```
 
 2. Install dependencies:
