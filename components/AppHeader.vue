@@ -4,9 +4,6 @@
   </div>
 </template>
 
-<script setup lang="ts">
-</script>
-
 <style scoped>
 .header-container {
   display: flex;

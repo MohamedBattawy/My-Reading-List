@@ -16,3 +16,11 @@ export type BookResponse = {
     data?: Book | Book[];
     message?: string;
   };
+
+// UI model for frontend display
+export interface DisplayBook {
+  id: number;
+  title: string;
+  author: string;
+  status: string;
+}

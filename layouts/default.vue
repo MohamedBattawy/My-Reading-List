@@ -1,10 +1,6 @@
-<script setup lang="ts">
-import AppHeader from '~/components/AppHeader.vue';
-</script>
-
 <template>
   <div class="centered-layout">
-    <AppHeader @add-book="$emit('add-book')" />
+    <AppHeader />
     <main>
       <slot />
     </main>
@@ -16,8 +12,6 @@ import AppHeader from '~/components/AppHeader.vue';
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  background: #f9fafb;
 }
 
 main {

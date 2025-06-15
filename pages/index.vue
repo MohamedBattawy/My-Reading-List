@@ -3,25 +3,22 @@
     <div class="add-btn-wrapper">
       <UButton color="primary" @click="goToAddBook">Add Book</UButton>
     </div>
-    <UTable :data="books" :columns="columns" />
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <BookCard
+        v-for="book in books"
+        :key="book.id"
+        :book="book"
+        @update="updateBookInList"
+        @delete="removeBookFromList"
+      />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { h, ref, resolveComponent } from 'vue';
-import { useRouter } from 'vue-router';
-import type { Book } from '~/server/models/book';
+import type { Book, DisplayBook } from '~/server/models/book';
 
-interface DisplayBook {
-  id: number;
-  title: string;
-  author: string;
-  status: string;
-}
-
-const UButton = resolveComponent('UButton');
-const USwitch = resolveComponent('USwitch');
-
+const router = useRouter();
 const { data: booksData } = await useFetch<{ success: boolean, data: Book[] }>('/api/books');
 const books = ref<DisplayBook[]>(
   booksData.value?.success && Array.isArray(booksData.value.data)
@@ -34,73 +31,19 @@ const books = ref<DisplayBook[]>(
     : []
 );
 
-const router = useRouter();
-
-const columns = [
-  { accessorKey: 'title', header: 'Book Name' },
-  { accessorKey: 'author', header: 'Author' },
-  { accessorKey: 'status', header: 'Status',
-    cell: ({ row }: { row: any }) =>
-      h(
-        UButton,
-        {
-          color: row.original.status === 'read' ? 'primary' : 'error',
-          onClick: () => updateBook(row.original, row.original.status !== 'read')
-        },
-        () => row.original.status
-      )
-  },
-  {
-    id: 'actions',
-    header: 'Actions',
-    enableSorting: false,
-    cell: ({ row }: { row: any }) =>
-      h(
-        UButton,
-        {
-          color: 'error',
-          onClick: () => deleteBook(row.original)
-        },
-        () => 'Delete'
-      )
-  }
-];
-
 function goToAddBook() {
   router.push('/add-book');
 }
 
-async function deleteBook(book: DisplayBook) {
-  try {
-    const res = await fetch(`/api/books/${book.id}`, { method: 'DELETE' });
-    const data = await res.json();
-    if (data.success) {
-      books.value = books.value.filter(b => b.id !== book.id);
-    } else {
-      alert(data.message || 'Failed to delete book.');
-    }
-  } catch (e) {
-    alert('Failed to delete book.');
+function updateBookInList(updatedBook: DisplayBook) {
+  const index = books.value.findIndex(b => b.id === updatedBook.id);
+  if (index !== -1) {
+    books.value[index] = updatedBook;
   }
 }
 
-async function updateBook(book: DisplayBook, val: boolean) {
-  const newIsRead = val ? 1 : 0;
-  try {
-    const res = await fetch(`/api/books/${book.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ is_read: newIsRead })
-    });
-    const data = await res.json();
-    if (data.success) {
-      book.status = newIsRead === 1 ? 'read' : 'unread';
-    } else {
-      alert(data.message || 'Failed to update book status.');
-    }
-  } catch (e) {
-    alert('Failed to update book status.');
-  }
+function removeBookFromList(bookId: number) {
+  books.value = books.value.filter(b => b.id !== bookId);
 }
 </script>
 
@@ -109,8 +52,5 @@ async function updateBook(book: DisplayBook, val: boolean) {
   display: flex;
   justify-content: center;
   margin-bottom: 1rem;
-}
-.ml-2 {
-  margin-left: 0.5rem;
 }
 </style> 

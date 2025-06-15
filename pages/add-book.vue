@@ -6,19 +6,23 @@
       </template>
 
       <form @submit.prevent="submitAddBook" class="space-y-4">
-        <UFormGroup label="Book Name">
-          <UInput v-model="book.title" placeholder="Enter book name" required />
-        </UFormGroup>
+        <UInput
+          v-model="book.title"
+          label="Book Name"
+          placeholder="Enter book name"
+          required
+        />
         
-        <UFormGroup label="Author">
-          <UInput v-model="book.author" placeholder="Enter author name" required />
-        </UFormGroup>
+        <UInput
+          v-model="book.author"
+          label="Author"
+          placeholder="Enter author name"
+          required
+        />
 
         <div class="flex justify-end gap-3">
           <UButton
-            color="neutral"
-            variant="soft"
-            type="button"
+            color="gray"
             @click="goBack"
           >
             Back
@@ -38,9 +42,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import type { BookInput, BookResponse } from '~/server/models/book';
 
 const router = useRouter();
-const book = ref({ title: '', author: '' });
+const book = ref<BookInput>({ title: '', author: '' });
 
 async function submitAddBook() {
   if (!book.value.title.trim() || !book.value.author.trim()) {
@@ -54,7 +59,7 @@ async function submitAddBook() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...book.value, is_read: 0 })
     });
-    const data = await res.json();
+    const data = await res.json() as BookResponse;
     if (data.success) {
       router.push('/');
     } else {
