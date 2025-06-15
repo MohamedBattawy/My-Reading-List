@@ -72,27 +72,6 @@ http://localhost:3000
 - `components/` - Reusable Vue components
 - `database/` - SQLite database configuration and initialization
 
-## Development
-
-To run the application in development mode with hot-reload:
-```bash
-npm run dev
-```
-
-## Production
-
-To build the application for production:
-
-1. Build the project:
-```bash
-npm run build
-```
-
-2. Start the production server:
-```bash
-npm run start
-```
-
 ## Technologies Used
 
 - [Nuxt 3](https://nuxt.com/) - The Vue.js Framework
